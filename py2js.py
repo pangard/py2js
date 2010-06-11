@@ -178,8 +178,6 @@ class JS(object):
 
         # This lists all variables in the local scope:
         self._scope = []
-        #All calls to names within _class_names will be preceded by 'new'
-        self._class_names = set()
         self._classes = {}
 
     def new_dummy(self):
@@ -327,7 +325,6 @@ class JS(object):
         class_name = node.name
         #self._classes remembers all classes defined
         self._classes[class_name] = node
-        self._class_names.add(class_name)
         js.append("function %s() {" % class_name)
         js.append("    if( this === _global_this){")
         js.append("        t = new %s();" % class_name)
@@ -637,8 +634,6 @@ class JS(object):
 
     def visit_Call(self, node):
         func = self.visit(node.func)
-        #~ if func in self._class_names:
-            #~ func = 'new '+func
         if node.keywords:
             keywords = []
             for kw in node.keywords:
