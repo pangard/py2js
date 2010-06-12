@@ -1661,7 +1661,7 @@ object.__name__ = 'object';
 var extend = function(cls, base_list) {
     var _mro = mro(cls,base_list);
     cls.prototype.__mro__ = _mro;
-    //properties not defined in the original definition
+    //properties not in the original definition
     cls.prototype.__inherited__ = {};
     for (var i = 1; i < _mro.length; i++){
         base = _mro[i];
@@ -1672,7 +1672,7 @@ var extend = function(cls, base_list) {
             }
         }
     }
-    //static properties not defined in the original definition
+    //static properties not in the original definition
     cls.__inherited__ = {};
     for (var i = 1; i < _mro.length; i++){
         base = _mro[i];
@@ -1707,21 +1707,21 @@ var mro = function(cls, base_list) {
                 /**good candidate */
                 candidate_found = true;
                 break;
-                }
             }
+        }
         if(!candidate_found || order.indexOf(candidate)>-1){
             throw Exception;
-            }
+        }
         order[order.length] = candidate;
         for (var i = orderlists.length-1; i >= 0; i--){
             if(orderlists[i][0] === candidate){
                 orderlists[i].splice(0,1);
                 if(orderlists[i].length === 0){
                     orderlists.splice(i,1);
-                    }
                 }
             }
         }
+    }
     return order;
 }
 
@@ -1729,8 +1729,8 @@ var mro_not_blocking = function(candidate, orderlists) {
     for(var j = 0; j < orderlists.length; j++){
         if(orderlists[j].indexOf(candidate)>0){
             return false;
-            }
         }
+    }
         return true;
 }
 
@@ -1751,7 +1751,8 @@ var _super = function(cls,instance){
     }
     if(k === _mro.length){
         cls_name = cls.__name__;
-        throw new py_builtins.AttributeError(instance, cls_name);}
+        throw new py_builtins.AttributeError(instance, cls_name);
+    }
     k = k + 1;
     for (var i = k; i < _mro.length; i++){
         base = _mro[i];
@@ -1762,7 +1763,7 @@ var _super = function(cls,instance){
                 }catch(e){
                     super_instance[property] = base.prototype[property];
                 }
-                }
+            }
         }
     }
     //TODO: super of static methods and class attributes

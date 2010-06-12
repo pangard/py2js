@@ -178,7 +178,6 @@ class JS(object):
 
         # This lists all variables in the local scope:
         self._scope = []
-        self._classes = {}
 
     def new_dummy(self):
         dummy = "__dummy%d__" % self.dummy
@@ -323,8 +322,7 @@ class JS(object):
         bases = [self.visit(n) for n in node.bases]
         assert len(bases) >= 1
         class_name = node.name
-        #self._classes remembers all classes defined
-        self._classes[class_name] = node
+
         js.append("function %s() {" % class_name)
         js.append("    if( this === _global_this){")
         js.append("        t = new %s();" % class_name)
@@ -337,7 +335,6 @@ class JS(object):
         js.append("%s.prototype.toString = _iter.prototype.toString;" % \
                 (class_name))
         from ast import dump
-        #~ methods = []
         self._class_name = class_name
         for stmt in node.body:
             if isinstance(stmt, ast.Assign):
@@ -349,15 +346,6 @@ class JS(object):
             else:
                 js.extend(self.visit(stmt))
         self._class_name = None
-
-        #The following is unnecessary: __init__ is inherited from
-        #'object'
-        #~ methods_names = [m.name for m in methods]
-        #~ if not "__init__" in methods_names:
-            #~ # if the user didn't define __init__(), we have to add it ourselves
-            #~ # because we call it from the constructor above
-            #~ js.append("_%s.prototype.__init__ = function() {" % class_name)
-            #~ js.append("}")
 
         js.append('extend(%s,[%s]);'%(class_name,
             ', '.join(['%s'%cls for cls in bases])))
