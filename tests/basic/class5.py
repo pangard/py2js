@@ -1,7 +1,7 @@
 def create(cls):
     return cls()
 
-class A:
+class A(object):
     def m(self):
         print "A.m()"
 
